@@ -1,0 +1,179 @@
+;
+VALIDACIONES UTILIZANDO EL STAGE DE MODIFY
+	CAMPO:Decimal[5,0]= decimal_from_ustring(CAMPO)            (NVARCHAR A DECIMAL)
+	CAMPO:string[8]= string_from_decimal(CAMPO)                (DECIMAL A VARCHAR)
+	CAMPO:int32= int32_from_decimal(CAMPO)   	                 (DECIMAL A INTEGER)
+	CAMPO:int64= int64_from_decimal(CAMPO)   	                 (DECIMAL A BIGINT)
+	CAMPO:int16= CAMPO		 	                 (INTEGER A SMALLINT) --COLOCAR NOWARN
+	CAMPO:Decimal[5,0] = decimal_from_string(CAMPO)                    (VARCHAR A DECIMAL)
+	CAMPO:Date= date_from_ustring['%yyyy%mm%dd'](CAMPO)                (VARCHAR A DATE) 
+	CAMPO:int32=int32_from_decimal[ceil](CAMPO)                        (REDONDEAR DECIMAL A INTEGER) 
+	CAMPO_RENAME:Int32 = Handle_null(CAMPO1,0)                         (De double a int32 , validando un campo null a not null, y RENOMBRANDO CAMPO ) 
+	CAMPO=Handle_Null(CAMPO,0)		        (VALIDAR NUMERICOS)	NULL  A  NOT NULL
+	CAMPO=Handle_Null(CAMPO,"9999-12-31")                              (VALIDAR DATE)	
+	CAMPO : Time = time_from_ustring['%hh%nn%ss'](CAMPO)               (VARCHAR A TIME)
+	CAMPO:String[8]= string_from_date['%yyyy%mm%dd'](CAMPO)            (DATE A VARCHAR)   
+	MTOSALDO_ME:decimal[18,4]=handle_null(MTOSALDO_ME,0)               (CONVERTIR NULL A UN CAMPO DECIMAL)
+
+a)Comando equivalente a LPAD
+Right(Str('0',4):56,4))          Resultado 0056  (Formatea en este caso con el caracter ceros 4 a la izquierda)
+b)Comando equivalente a RPAD
+Left(54:Str('X',4),4)             Resultado 54XX  (Formatea en este caso con el caracter X  4  a la derecha)
+c)Utilizar function DecimalToString (Argumento , ,"suppress_zero")  para borrar ceros a la izquierda
+En caso requieran quitar ceros a la izquierda
+Ejm
+DecimalToString('0000578900',"suppress_zero")  Resultado  : 578900
+d)Para formatear la fecha actual  a YYYYMMDD
+utilizar DateToString(CurrentDate(),"%yyyy%mm%dd")
+e)Para redondear el archivo a n decimales (Equivalente al Round)
+utilizar DecimalToDecimal(Nombredelcampoinput,”round_inf”)
+f)Para restar fechas
+utilizar  DaysSinceFromDate
+ejemplo   DaysSinceFromDate("2001-01-20","2001-01-28") = -8
+
+
+select * from emp, dept where emp.dept_id=dept.dept_id(+)
+
+
+SELECT A1.Store_Name, SUM(A2.Sales) SALES
+FROM Geography A1, Store_Information A2
+WHERE A1.Store_Name = A2.Store_Name (+)
+GROUP BY A1.Store_Name;
+
+
+
+
+FECHAINGRESOFALCON:timestamp = timestamp_from_string [%yyyy-%mm-%dd %hh:%nn:%ss] (FECHAINGRESOFALCON)
+
+CODNUMEROTARJETA:string[max=19]=string_trim[" ",end](CODNUMEROTARJETA)  elimina espacios en blanco  al final antes transformando varchar (50) a varchar(19)
+
+ADICIONALMENTE
+	
+DROP para borrar campos
+
+Comando:
+paste -d '|' #var_parametros.varArchivoFuente#*.txt > #var_parametros.varArchivoFinal#
+rm -rf #var_parametros.varArchivoFuente#*
+rm -rf #var_loop.varCabecera# #var_loop.varDetalle#
+cat #var_loop.varCabecera# #var_loop.varDetalle# > #var_loop.varDestino#
+cd #var_param.varRuta#; tar cvf - #var_loop.varArchivo#.txt | gzip > #var_loop.varArchivo#.tar.gz
+cd #var_param.varRuta#; tar cvf - #var_loop.varArchivo#.txt | gzip > #var_loop.varArchivo#.tar.gz
+
+
+Esta validación lo encontre en un Loop 
+Fmt(slp_ctas.$Counter, "R%2")
+
+
+FILTER
+CAMPO Is Not Null
+CAMPO Is Null
+RUSDOBSERV like 'Costeo procesado%'
+
+Right("00000000":Convert('-','',Trim(link_ds_ia_FSD601.PPFPAG)),8)
+TRANSFORM
+SetNull() 													 									(SETEAR CAMPOS EN NULO)
+Right("00000000":Trim(LINK.CAMPO),8) 									(COMPLETAR VACIOS CON 0 USANDO STRING)
+NullToValue(LINK.CAMPO,-1)				   									(ASIGNA DE NULL A -1 )																					StringToUString(DateToString(lnk_db2_ia_FSH015.HFCON,"%yyyy%mm%dd"))  - Conversión date a string ( char - unicode )						
+(DateToString(LINK.CAMPO,"%yyyy%mm%dd"): LINK.CAMPO[1,2]:LINK.CAMPO[3,2]:LINK.CAMPO[5,2])  20130909131415
+Trim(DateToString(link_tran_fnte_stg.HFCON,"%yyyy%mm%dd"))[1,6] 201301
+AsInteger(DateToString(link_tran_fnte_stg.HFCON,"%yyyy%mm%dd")) 20130101
+DaysSinceFromDate(StringToDate(lnk_ds_1.AOFVTO,"%yyyy%mm%dd"),StringToDate(lnk_ds_1.AOFVAL,"%yyyy%mm%dd"))/30    20010201 20010101 = 1 MES resta meses 
+DecimalToDecimal(campodecimal,"round_inf") -- redondear decimal a integer o bigint 
+Right("00000000":Trim(LINK.CAMPO),8)
+
+Routines:
+rstDeleteAllDataSetArg       -- ELIMINA DATA SET
+rtSFechaActualizacionDs('H')
+rtsFileExists('ARCHIVO')
+rtSFechaStrFDs    					 -- 2013/08/08   = 2013-08-08
+rtSFechaStrDs                --2013-01-01 00:00:00.0 , 2013/01/01 , 2013-01-01  = 20130101
+
+UpCase(Trim(Convert(Char(0):Char(10):Char(13):Char(124),'',lnk_ds_stg_fnte_p02.CODNUMEROTARJETA)))   --- quita valores extraños
+
+ROW_NUMBER() OVER (PARTITION BY RUSCNROSOL ORDER BY RUSCNROSOL ASC) AS NFILA  -- NFILA = 1
+
+TIMESTAMP_FORMAT(TO_CHAR(RUSFFECING, 'yyyy-mm-dd') || RUSDHORING, 'yyyy-mm-dd HH24:Mi:ss')
+REPLACE(MV33DESCRI,'S/.','')
+FETCH FIRST 1 ROW ONLY  
+
+
+
+@PARTITIONNUM +(@INROWNUM-1) * @NUMPARTITIONS + 1
+
+
+Field(varRegistro.varRegistro,"|",1)   -- espacio
+
+RawToString( lnk_BT_BLPRBDBT_LWCM38F.LWCM38F )
+BINARIY  PROPIEDADES DEL JOB IBM037 - OFF  ( RAW_TO_STRING)
+
+sh -x   #PARM_PATH.$PATH_WORK#get_file_uni.sh  #PARM_SBP_DSH_FINANZAS.$SBP_DSH_FINANZAS_FTP_IP#   #PARM_SBP_DSH_FINANZAS.$SBP_DSH_FINANZAS_FTP_USR#  #PARM_SBP_DSH_FINANZAS.$SBP_DSH_FINANZAS_FTP_PWD#  #PARM_SBP_DSH_FINANZAS.$SBP_DSH_FINANZAS_FTP_FOLDER#  #varParametro.varNombreArchivo#  #PARM_PATH.$PATH_WORK##varParametro.varNombreArchivo#
+rm -f #PARM_PATH.$PATH_WORK##varParametro.varNombreArchivo#
+
+
+
+cat /ds/work/desa/ll.txt
+
+
+caso1
+para el uso de un contador se agrego un column generator con valor inicial 1 incremento 1 , luego ese valor se llevó a un agregator para usar  count rows con campo CONTADOR, luego un inner join para cruzar por los campos agrupados canal,tipocanal,codcuentabt y rescatar los demas campos que el agregator no puede traer.
+
+caso2
+Un campo CODNUMEROTARJETA tiene 2 salidas pero con diferente nombres, se usa modify y a la vez se  realiza un substring de varchar (50)  a varchar (19)
+
+NROTARJETA1= CODNUMEROTARJETA
+NROTARJETA= CODNUMEROTARJETA
+
+CODNUMEROTARJETA:string[max=19]=string_trim[" ",end](CODNUMEROTARJETA)  elimina espacios en blanco  al final antes transformando varchar (50) a varchar(19)
+
+
+
+
+WITH TMP_FECHAMAX AS
+(SELECT MAX(cod_fecha_bk) COD_FECHA_BK FROM dwbme_own.FT_OTRAS_ENTIDADES)
+SELECT S1.* FROM dwbme_own.FT_OTRAS_ENTIDADES S1 
+JOIN TMP_FECHAMAX S2 ON S1.COD_FECHA_BK=S2.COD_FECHA_BK
+
+SELECT
+TO_NUMBER(TO_CHAR(cod_fecha_bk,'DDMMYYYY'))as DES
+ from dwbme_own.FT_OTRAS_ENTIDADES
+
+¿Cómo leer múltiples archivos usando un solo trabajo DataStage? DK ®
+
+Este artículo proporciona diferentes formas de leer múltiples archivos (que tienen metadatos iguales o diferentes) usando un solo trabajo . DK ®
+
+Primero averigüe si los metadatos de los archivos son iguales o diferentes. 
+Si los archivos tienen los mismos metadatos DK ®
+
+Método 1 : nombres de archivo específicos: en la etapa secuencial, adjunte los metadatos a la etapa secuencial. En sus propiedades, seleccione Método de lectura como 'Archivos específicos'. Luego agregue todos los archivos seleccionando la propiedad 'archivo' de las 'propiedades disponibles para agregar'.
+Se verá a continuación:
+Archivo = /home/myFile1.txt
+Archivo = /home/myFile2.txt
+Archivo = /home/myFile3.txt
+Método de lectura = Archivo (s) específico (s) DK ®
+
+Método 2 : uso de comodines: en el método anterior, en lugar de proporcionar nombres de archivo individuales, también se puede proporcionar un patrón de nombres de archivo. Use el Método de lectura como 'Patrón de archivo'.
+Luego, en el campo de patrón de archivo, coloque cualquier comando válido de Unix similar al siguiente:
+FileName_? (seleccionando todos los archivos como FileName_1, FileName_2)
+FileName_ * (seleccionando todos los archivos como FileName_1, FileName_12.txt, FileName_.txt) DK ®
+
+Método 3 : uso de una expresión de shell válida (sintaxis de shell Bourne): si hay 5 archivos con un patrón similar (como myFile * .txt) y solo se necesitan leer tres de estos cinco archivos, entonces se puede usar este método. Use el Método de lectura como 'Patrón de archivo' y proporcione un comando de shell válido como el siguiente en el campo Patrón de archivo - DK ®
+`ls /home/myFile*.txt | cabeza -3`             
+
+Método 4 : uso del trabajo de instancias múltiples: para este método, habilite "Permitir instancias múltiples" en las Propiedades del trabajo. Agregue un parámetro de trabajo en la etapa de archivo secuencial donde debe definirse el archivo de entrada. DK ®
+Durante la ejecución, se debe pasar un valor al parámetro del trabajo. Aquí pasa la ruta del archivo de entrada colocada en diferentes directorios. Ejecute el trabajo para todos los archivos múltiples usando el mismo trabajo pasando la ruta del archivo de entrada para cada ejecución.
+Se debe proporcionar una identificación de invocación para cada ejecución. Esta identificación indica el no. de veces el trabajo ha sido ejecutado. Esto se puede observar en el registro de trabajo. DK ®
+
+Método 5 : otra opción es tener una etapa de comando en la secuencia de trabajo que lea el nombre del archivo. Y luego pase la salida de este comando ($ CommandOutput) al parámetro de nombre de archivo de la etapa de archivo secuencial. DK ®
+
+
+Si los archivos tienen metadatos diferentes (la estructura no es la misma)
+Si los archivos tienen metadatos diferentes, entonces debería usarse la opción de archivo de esquema. La opción de archivo de esquema está disponible en la etapa de archivo secuencial en 'Propiedades para agregar' en el menú Opciones. Proporciona al usuario una opción para proporcionar los detalles de los metadatos del archivo, su estructura de columnas y su estructura de archivos mediante un archivo de esquema. DK ®
+Uno solo necesita asegurarse de que el archivo y su esquema deben estar de acuerdo entre sí. También asegúrese de que la propiedad RCP (Propagación de columna en tiempo de ejecución) del trabajo esté establecida como Verdadera (esto garantizará que los metadatos de la columna se pasen a otras etapas). DK ®
+
+Método 1 : uso de parámetros: creación de una etapa secuencial de trabajo paralelo (con la propiedad del archivo de esquema activa). Agregue tres parámetros de trabajo: pFilePath, pFileName, pSchemaPath. En la etapa secuencial, agregue pFilePath y pFileName a la propiedad del archivo de la etapa. Agregue la propiedad de nombre de esquema de etapa, agregue pSchemaName a la propiedad de esquema.
+Luego, mientras ejecuta el trabajo, proporcione el valor apropiado de los tres parámetros. DK ®
+
+Método 2 : uso del trabajo de varias instancias: en el método anterior, simplemente configure la propiedad de múltiples instancias del trabajo como verdadera y ejecute el trabajo para varios conjuntos de archivos y su esquema.
+
+Método 3 : uso del bucle en la secuencia de trabajo: de manera similar, el trabajo anterior se puede usar en una secuencia de trabajo donde se ejecuta usando un bucle. Aquí cada iteración del bucle procesará un archivo. DK ®
+Esto se puede hacer más fácil de ejecutar usando una Actividad UserVariables y asignando la lista de archivos y archivos de esquema en las variables creadas allí
